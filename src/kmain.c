@@ -2,6 +2,7 @@
 #include <stddef.h>
 
 #include <fb/fb.h>
+#include <string/string.h>
 
 #include <kernel/gdt.h>
 #include <kernel/idt.h>
@@ -47,27 +48,27 @@ void _start(struct stivale2_struct *stivale2_struct)
 {
     /* init the framebuffer */
     init_fb(stivale2_get_tag(stivale2_struct, STIVALE2_STRUCT_TAG_FRAMEBUFFER_ID));
-    print("[OK] FB\n");
+    kprintf("[OK] FB\n");
 
     /* init the GDT (Global Descriptor Table) */
     init_gdt();
-    print("[OK] GDT\n");
+    kprintf("[OK] GDT\n");
 
     /* init the IDT */
     init_idt();
-    print("[OK] IDT\n");
+    kprintf("[OK] IDT\n");
 
     /* init the ISRs */
     init_isr();
-    print("[OK] ISR\n");
+    kprintf("[OK] ISR\n");
 
     /* init the IRQs */
     init_irq();
-    print("[OK] IRQ\n");
+    kprintf("[OK] IRQ\n");
 
     /* init the keyboard */
     init_kb();
-    print("[OK] KB\n");
+    kprintf("[OK] KB\n");
 
     for (;;)
     {

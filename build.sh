@@ -1,7 +1,7 @@
 # --------------------------------------
 
 LD="ld"
-CC="clang"
+CC="gcc"
 AS="nasm"
 CFLAGS="-std=gnu99 -ffreestanding -fno-stack-protector -Wall -Wextra -c -Isrc/include"
 AFLAGS="-f elf64"
