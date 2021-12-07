@@ -20,7 +20,7 @@ Depending on your operating system you may need different packages. In case you 
 Kernel:
 
 - [x] ISRs and IRQs
-- [ ] Serial driver
+- [x] Serial driver
 - [ ] PCI
 
 Drivers and usage:
