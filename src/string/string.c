@@ -4,11 +4,11 @@
 #include <string/string.h>
 #include <fb/fb.h>
 
-void kprintf(char *fmt, ...)
+void kprintf(const char *fmt, ...)
 { /* this function is a variadic function, it accepts a variable number of arguments */
     va_list lst;
     va_start(lst, fmt); /* fmt is the previous argument to the ones we want (...) */
-    /* NOTE for some reason, this does not work with Clang */
+    /* NOTE for some reason, this does not work with llvm, it generates garbage */
 
     for (size_t i = 0; fmt[i]; i++)
     {

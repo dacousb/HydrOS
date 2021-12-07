@@ -1,3 +1,3 @@
 #pragma once
 
-void kprintf(char* fmt, ...);
+void kprintf(const char* fmt, ...);

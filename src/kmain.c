@@ -10,6 +10,7 @@
 #include <kernel/irq.h>
 
 #include <drivers/kb.h>
+#include <drivers/serial.h>
 
 void _start(struct stivale2_struct *stivale2_struct);
 
@@ -49,6 +50,10 @@ void _start(struct stivale2_struct *stivale2_struct)
     /* init the framebuffer */
     init_fb(stivale2_get_tag(stivale2_struct, STIVALE2_STRUCT_TAG_FRAMEBUFFER_ID));
     kprintf("[OK] FB\n");
+
+    /* init the serial */
+    int serial = init_serial();
+    kprintf((serial) ? "[ER] SERIAL\n" : "[OK] SERIAL\n");
 
     /* init the GDT (Global Descriptor Table) */
     init_gdt();

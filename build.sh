@@ -13,7 +13,7 @@ iso="hydros.iso"
 # --------------------------------------
 
 clean() {
-    rm *.o *.bin *.iso
+    rm *.o *.bin *.iso *.log
     rm -rf mnt
 }
 
