@@ -34,3 +34,19 @@ void port_word_out(unsigned short port, unsigned short data)
         :
         : "a"(data), "d"(port));
 }
+
+uint32_t port_long_in(uint32_t port)
+{
+    uint32_t result;
+    asm("inl %1, %0"
+        : "=a"(result)
+        : "d"(port));
+    return result;
+}
+
+void port_long_out(uint32_t port, uint32_t data)
+{
+    asm("outl %0, %1"
+        :
+        : "a"(data), "d"(port));
+}

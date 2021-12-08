@@ -8,6 +8,7 @@
 #include <kernel/idt.h>
 #include <kernel/isr.h>
 #include <kernel/irq.h>
+#include <kernel/pci.h>
 
 #include <drivers/kb.h>
 #include <drivers/serial.h>
@@ -70,6 +71,9 @@ void _start(struct stivale2_struct *stivale2_struct)
     /* init the IRQs */
     init_irq();
     kprintf("[OK] IRQ\n");
+
+    /* init the PCI */
+    init_pci();
 
     /* init the keyboard */
     init_kb();
