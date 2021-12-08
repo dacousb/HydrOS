@@ -21,7 +21,7 @@ Kernel:
 
 - [x] ISRs and IRQs
 - [x] Serial driver
-- [ ] PCI
+- [x] PCI listing
 
 Drivers and usage:
 
