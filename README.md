@@ -10,7 +10,7 @@ Hydros (that's why OS looks so nice there) is one of the Greek deities associate
 
 ## Building
 
-Depending on your operating system you may need different packages. In case you run `build.sh` with a problem, simply install the package of the failed command. To build the kernel you need *clang*, *nasm* and the GNU linker (*ld*). Finally, to build the image you will need *xorriso*.
+Depending on your operating system you may need different packages. In case you run `build.sh` with a problem, simply install the package of the failed command. To build the kernel you need *gcc*, *nasm* and the GNU linker (*ld*). Finally, to build the image you will need *xorriso*.
 
 - Clone the repository with `git clone <url>`
 - Run `build.sh` with the `build` or `run` options (use the `limine` option before that if you are building the kernel for the first time)
@@ -22,6 +22,7 @@ Kernel:
 - [x] ISRs and IRQs
 - [x] Serial driver
 - [x] PCI listing
+- [ ] Memory
 
 Drivers and usage:
 
