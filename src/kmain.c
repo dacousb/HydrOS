@@ -12,6 +12,7 @@
 
 #include <drivers/kb.h>
 #include <drivers/serial.h>
+#include <drivers/cmos.h>
 
 void _start(struct stivale2_struct *stivale2_struct);
 
@@ -78,6 +79,9 @@ void _start(struct stivale2_struct *stivale2_struct)
     /* init the keyboard */
     init_kb();
     kprintf("[OK] KB\n");
+
+    /* print the hour */
+    print_cmos();
 
     for (;;)
     {

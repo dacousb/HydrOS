@@ -1,6 +1,7 @@
 #include <stdarg.h>
 #include <stddef.h>
 
+#include <math/math.h>
 #include <string/string.h>
 #include <fb/fb.h>
 
@@ -42,6 +43,7 @@ void kprintf(const char *fmt, ...)
     va_list lst;
     va_start(lst, fmt); /* fmt is the previous argument to the ones we want (...) */
     /* NOTE for some reason, this does not work with llvm, it generates garbage */
+    int leading_zero;
 
     for (size_t i = 0; fmt[i]; i++)
     {
@@ -58,6 +60,17 @@ void kprintf(const char *fmt, ...)
                 break;
             case 'x':
                 print(itoa('x', va_arg(lst, int)));
+                break;
+            case '0' ... '9':
+                leading_zero = fmt[i] - '0';
+                i++;
+                if (fmt[i] == 'u')
+                {
+                    int tmp = va_arg(lst, int);
+                    if (tmp < pow(10, leading_zero))
+                        putchar('0');
+                    print(itoa('u', tmp));
+                }
                 break;
             case '%':
                 putchar(fmt[i]);
