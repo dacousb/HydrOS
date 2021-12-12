@@ -24,6 +24,7 @@ typedef struct dev
     uint16_t dev;
     uint16_t class;
     uint16_t subclass;
+    uint16_t ioaddr;
 } dev_t;
 
 typedef struct class

@@ -76,12 +76,12 @@ void _start(struct stivale2_struct *stivale2_struct)
     /* init the PCI */
     init_pci();
 
+    /* print the hour */
+    print_cmos();
+
     /* init the keyboard */
     init_kb();
     kprintf("[OK] KB\n");
-
-    /* print the hour */
-    print_cmos();
 
     for (;;)
     {

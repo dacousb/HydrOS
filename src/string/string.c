@@ -64,12 +64,12 @@ void kprintf(const char *fmt, ...)
             case '0' ... '9':
                 leading_zero = fmt[i] - '0';
                 i++;
-                if (fmt[i] == 'u')
+                if (fmt[i] == 'u' || fmt[i] == 'x')
                 {
                     int tmp = va_arg(lst, int);
-                    if (tmp < pow(10, leading_zero))
+                    if (tmp < pow((fmt[i] == 'u') ? 10 : 16, leading_zero))
                         putchar('0');
-                    print(itoa('u', tmp));
+                    print(itoa(fmt[i], tmp));
                 }
                 break;
             case '%':

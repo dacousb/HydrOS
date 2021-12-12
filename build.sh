@@ -50,7 +50,8 @@ then
 
     if [[ $1 == "run" ]]
     then
-        qemu-system-x86_64 -cdrom $iso
+        if [[ $2 == "ne2k" ]]; then qemuflags+="-nic user,model=ne2k_pci"; fi
+        qemu-system-x86_64 -cdrom $iso $qemuflags
     fi
 fi
 
@@ -69,4 +70,5 @@ fi
 if [[ $1 == "" ]]
 then
     echo "(build), (run), (limine), (clean)"
+    echo "(run ne2k) to load the ne2k device"
 fi

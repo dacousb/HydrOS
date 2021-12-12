@@ -1,5 +1,8 @@
 #include <kernel/pci.h>
 #include <kernel/ports.h>
+
+#include <drivers/ne2k.h>
+
 #include <string/string.h>
 
 uint16_t pci_conf_read_word(uint8_t bus, uint8_t dev, uint8_t func, uint8_t offset)
@@ -37,6 +40,21 @@ uint16_t get_class(uint8_t bus, uint8_t dev, uint8_t func)
 uint16_t get_subclass(uint8_t bus, uint8_t dev, uint8_t func)
 {
     return pci_conf_read_word(bus, dev, func, 10) >> 16;
+}
+
+uint64_t get_io_address(uint8_t bus, uint8_t dev, uint8_t func)
+{
+    /* Base Address Registers (or BARs) are used to hold memory
+     * addresses used by the device
+     * 
+     * NOTE keep in mind that this implementation is simplified
+     * so it just works for some specific devices
+     */
+    uint64_t addr = 0x0;
+    uint32_t bar0 = pci_conf_read_word(bus, dev, func, 16);
+    if (bar0 & 1) /* I/O space BAR */
+        addr = (bar0 >> 2) << 2; /* all the bits except the first two */
+    return addr;
 }
 
 char *get_vendor_name(uint16_t vendor)
@@ -209,12 +227,23 @@ void init_pci()
                 temp.class = get_class(bus, dev, func);
                 temp.subclass = get_subclass(bus, dev, func);
 
-                class_t name_temp = get_class_name(temp.class, temp.subclass);
+                /* if it is a configurable device, configure it,
+                 * otherwise, just print the pertinent information */
+                if (temp.dev == 0x8029) /* NE2000 network card */
+                {
+                    temp.ioaddr = get_io_address(bus, dev, func);
+                    if (temp.ioaddr)
+                        init_ne2k(temp.ioaddr);
+                }
+                else
+                {
+                    class_t name_temp = get_class_name(temp.class, temp.subclass);
 
-                kprintf("[PCI] (0x%x) vendor = %s, class = %s, subclass = %s\n",
-                        temp.dev, get_vendor_name(temp.vendor),
-                        name_temp.class_name,
-                        name_temp.subclass_name);
+                    kprintf("[PCI] (0x%x) vendor = %s, class = %s, subclass = %s\n",
+                            temp.dev, get_vendor_name(temp.vendor),
+                            name_temp.class_name,
+                            name_temp.subclass_name);
+                }
             }
         }
     }

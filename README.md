@@ -29,6 +29,9 @@ Drivers and usage:
 - [x] Framebuffer support
 - [x] PS/2 Keyboard driver
 - [ ] Mouse support
+- [x] Basic NE2000 driver<sup>1</sup>
+
+<sup>1</sup> Basic init and MAC address
 
 # License
 
