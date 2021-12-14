@@ -14,6 +14,8 @@
 #include <drivers/serial.h>
 #include <drivers/cmos.h>
 
+#include <mem/phys.h>
+
 void _start(struct stivale2_struct *stivale2_struct);
 
 static uint8_t stack[4096];
@@ -50,8 +52,10 @@ void *stivale2_get_tag(struct stivale2_struct *stivale2_struct, uint64_t id)
 void _start(struct stivale2_struct *stivale2_struct)
 {
     /* init the framebuffer */
-    init_fb(stivale2_get_tag(stivale2_struct, STIVALE2_STRUCT_TAG_FRAMEBUFFER_ID));
-    kprintf("[OK] FB\n");
+    struct stivale2_struct_tag_framebuffer *fb_tag = (struct stivale2_struct_tag_framebuffer *)
+        stivale2_get_tag(stivale2_struct, STIVALE2_STRUCT_TAG_FRAMEBUFFER_ID);
+    init_fb(fb_tag);
+    kprintf("[OK] FB %ux%u\n", fb_tag->framebuffer_width, fb_tag->framebuffer_height);
 
     /* init the serial */
     int serial = init_serial();
@@ -72,6 +76,10 @@ void _start(struct stivale2_struct *stivale2_struct)
     /* init the IRQs */
     init_irq();
     kprintf("[OK] IRQ\n");
+
+    /* after the interrupts and before the PCI,
+     * we initialize the physical memory */
+    init_phys(stivale2_get_tag(stivale2_struct, STIVALE2_STRUCT_TAG_MEMMAP_ID));
 
     /* init the PCI */
     init_pci();

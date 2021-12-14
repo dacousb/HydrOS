@@ -8,7 +8,7 @@ void init_ne2k(uint64_t ioaddr)
      * explanation */
 
     /* NE2000 or NE2k is a network card specification,
-     * this is a simple implementation to initializate it and get
+     * this is a simple implementation to initialize it and get
      * the MAC address of the device */
 
     /* reset the board, this is done by doing a read

@@ -22,7 +22,11 @@ Kernel:
 - [x] ISRs and IRQs
 - [x] Serial driver
 - [x] PCI listing
-- [ ] Memory
+
+Memory
+- [x] Basic memory information
+- [ ] Physical memory
+- [ ] Virtual memory
 
 Drivers and usage:
 
