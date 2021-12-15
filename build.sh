@@ -53,22 +53,18 @@ then
         if [[ $2 == "ne2k" ]]; then qemuflags+="-nic user,model=ne2k_pci"; fi
         qemu-system-x86_64 -cdrom $iso $qemuflags
     fi
-fi
 
-if [[ $1 == "clean" ]]
+elif [[ $1 == "clean" ]]
 then
     clean
-fi
 
-if [[ $1 == "limine" ]]
+elif [[ $1 == "limine" ]]
 then
     rm -rf limine
     git clone https://github.com/limine-bootloader/limine.git --branch=v2.0-branch-binary --depth=1
     make -C limine
-fi
 
-if [[ $1 == "" ]]
-then
+else
     echo "(build), (run), (limine), (clean)"
     echo "(run ne2k) to load the ne2k device"
 fi
