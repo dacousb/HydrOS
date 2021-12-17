@@ -22,6 +22,7 @@ Kernel:
 - [x] ISRs and IRQs
 - [x] Serial driver
 - [x] PCI listing
+- [x] ACPI
 
 Memory
 - [x] Basic memory information
@@ -34,6 +35,7 @@ Drivers and usage:
 - [x] PS/2 Keyboard driver
 - [ ] Mouse support
 - [x] Basic NE2000 driver<sup>1</sup>
+- [x] Basic shutdown (ACPI)
 
 <sup>1</sup> Basic init and MAC address
 

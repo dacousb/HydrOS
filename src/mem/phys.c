@@ -30,7 +30,6 @@
 #define CLEAR_PAGE(page) phys_bitmap[page / 8] &= ~(1 << (page % 8))
 #define CHECK_PAGE(page) phys_bitmap[page / 8] & (1 << (page % 8))
 
-static uint64_t highest_page = 0;
 static uint8_t *phys_bitmap = {0};
 
 void phys_alloc_page(void *addr)

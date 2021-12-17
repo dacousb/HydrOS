@@ -9,6 +9,7 @@
 #include <kernel/isr.h>
 #include <kernel/irq.h>
 #include <kernel/pci.h>
+#include <kernel/acpi.h>
 
 #include <drivers/kb.h>
 #include <drivers/serial.h>
@@ -78,6 +79,9 @@ void _start(struct stivale2_struct *stivale2_struct)
     /* init the IRQs */
     init_irq();
     kprintf("[OK] IRQ\n");
+
+    /* init the ACPI */
+    init_acpi(stivale2_get_tag(stivale2_struct, STIVALE2_STRUCT_TAG_RSDP_ID));
 
     /* after the interrupts and before the PCI,
      * we initialize the physical memory */
