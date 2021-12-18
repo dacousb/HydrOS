@@ -81,12 +81,48 @@ void init_phys(struct stivale2_struct_tag_memmap *mem_tag)
      *   with any other entry
      */
 
+    /* the problem with the bitmap approach is that we don't really know how many
+     * bytes we will need to store our bitmap, and since we didn't initialize the physical
+     * memory, we cannot allocate it
+     * 
+     * a solution would be loading the bitmap into some available area, in theory, the entries must
+     * be sorted by base address, lowest to highest, the stivale protocol says that
+     *          
+     *       [the entries are guaranteed to be sorted by base address, lowest to highest]
+     * 
+     * thus, the bitmap size in bytes can be calculated with
+     * 
+     *                  highest address / pages / 8 pages per bitmap byte
+     */
+    uint32_t bitmap_bytes = (mem_tag->memmap[mem_tag->entries].base + mem_tag->memmap[mem_tag->entries].length) / PAGE_SIZE / 8;
+    uint8_t bitmap_set = 0;
+
     for (uint8_t i = 0; i < mem_tag->entries; i++)
     {
         struct stivale2_mmap_entry mem_entry = mem_tag->memmap[i];
         total_memory += mem_entry.length;
         if (mem_entry.type == STIVALE2_MMAP_USABLE)
+        {
             available_memory += mem_entry.length;
+
+            /* if we find an entry were we can store our bitmap, we will
+             * manually allocate it as following */
+            if (!bitmap_set && mem_entry.length >= bitmap_bytes)
+            {
+                phys_bitmap = (uint8_t *)mem_entry.base;
+                mem_entry.base += bitmap_bytes;
+                mem_entry.length -= bitmap_bytes;
+                bitmap_set = 1;
+            }
+        }
+    }
+
+    /* now that we got the bitmap correctly initialized, we can set all the pages as free */
+    for (uint8_t i = 0; i < mem_tag->entries; i++)
+    {
+        struct stivale2_mmap_entry mem_entry = mem_tag->memmap[i];
+        if (mem_entry.type == STIVALE2_MMAP_USABLE)
+            phys_free_multi((void *)mem_entry.base, mem_entry.length / PAGE_SIZE);
     }
 
     kprintf("[PHYS] %u/%uMB\n", available_memory / (1024 * 1024), total_memory / (1024 * 1024));
