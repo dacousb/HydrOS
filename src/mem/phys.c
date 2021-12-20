@@ -26,11 +26,10 @@
  *                                  0000 0000, 0100 0000
  */
 
-#define SET_PAGE(page) phys_bitmap[page / 8] |= (1 << (page % 8))
-#define CLEAR_PAGE(page) phys_bitmap[page / 8] &= ~(1 << (page % 8))
-#define CHECK_PAGE(page) phys_bitmap[page / 8] & (1 << (page % 8))
+#define SET_PAGE(page) (phys_bitmap[page / 8] |= (1 << (page % 8)))
+#define CLEAR_PAGE(page) (phys_bitmap[page / 8] &= ~(1 << (page % 8)))
 
-static uint8_t *phys_bitmap = {0};
+uint8_t *phys_bitmap = {0};
 
 void phys_alloc_page(void *addr)
 {
@@ -94,8 +93,7 @@ void init_phys(struct stivale2_struct_tag_memmap *mem_tag)
      * 
      *                  highest address / pages / 8 pages per bitmap byte
      */
-    uint32_t bitmap_bytes = (mem_tag->memmap[mem_tag->entries].base + mem_tag->memmap[mem_tag->entries].length) / PAGE_SIZE / 8;
-    uint8_t bitmap_set = 0;
+    uint32_t bitmap_bytes = 0;
 
     for (uint8_t i = 0; i < mem_tag->entries; i++)
     {
@@ -104,20 +102,33 @@ void init_phys(struct stivale2_struct_tag_memmap *mem_tag)
         if (mem_entry.type == STIVALE2_MMAP_USABLE)
         {
             available_memory += mem_entry.length;
-
-            /* if we find an entry were we can store our bitmap, we will
-             * manually allocate it as following */
-            if (!bitmap_set && mem_entry.length >= bitmap_bytes)
-            {
-                phys_bitmap = (uint8_t *)mem_entry.base;
-                mem_entry.base += bitmap_bytes;
-                mem_entry.length -= bitmap_bytes;
-                bitmap_set = 1;
-            }
+            bitmap_bytes = (mem_entry.base + mem_entry.length) / PAGE_SIZE / 8;
         }
     }
 
-    /* now that we got the bitmap correctly initialized, we can set all the pages as free */
+    for (uint8_t i = 0; i < mem_tag->entries; i++)
+    {
+        struct stivale2_mmap_entry mem_entry = mem_tag->memmap[i];
+        /* if we find an entry were we can store our bitmap, we will
+         * manually allocate it as following */
+        if (mem_entry.type == STIVALE2_MMAP_USABLE && mem_entry.length > bitmap_bytes)
+        {
+            phys_bitmap = (uint8_t *)mem_entry.base;
+            mem_entry.base += bitmap_bytes;
+            mem_entry.length -= bitmap_bytes;
+            break;
+        }
+    }
+
+    /* now that we got the bitmap correctly initialized, we can set all the pages contained
+     * in STIVALE2_MMAP_USABLE entries as free
+     * 
+     * we need to keep in mind that between entries, there is memory that is not usable,
+     * so, before doing anything, let's mark everything as used (the for loop will
+     * take care of setting the usable areas as free)
+     */
+
+    memset(phys_bitmap, 0xFF, bitmap_bytes); /* 0xFF is equivalent to one entire byte set */
     for (uint8_t i = 0; i < mem_tag->entries; i++)
     {
         struct stivale2_mmap_entry mem_entry = mem_tag->memmap[i];

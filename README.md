@@ -26,7 +26,7 @@ Kernel:
 
 Memory
 - [x] Basic memory information
-- [ ] Physical memory
+- [x] Physical memory
 - [ ] Virtual memory
 
 Drivers and usage:
@@ -34,10 +34,15 @@ Drivers and usage:
 - [x] Framebuffer support
 - [x] PS/2 Keyboard driver
 - [ ] Mouse support
-- [x] Basic NE2000 driver<sup>1</sup>
 - [x] Basic shutdown (ACPI)
 
-<sup>1</sup> Basic init and MAC address
+Network:
+
+- [x] Basic NE2000 driver<sup>1</sup>
+- [x] Basic RTL8139 driver<sup>1</sup>
+- [ ] Working network
+
+<sup>[1]</sup> Basic init and MAC address
 
 # License
 

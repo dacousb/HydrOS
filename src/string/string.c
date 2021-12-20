@@ -1,5 +1,4 @@
 #include <stdarg.h>
-#include <stddef.h>
 
 #include <math/math.h>
 #include <string/string.h>
@@ -107,4 +106,12 @@ void kprintf(const char *fmt, ...)
     }
 
     va_end(lst);
+}
+
+void *memset(void *buffptr, int value, size_t size)
+{
+    uint8_t *buff = (uint8_t *)buffptr;
+    for (size_t i = 0; i < size; i++)
+        buff[i] = (uint8_t)value;
+    return buffptr;
 }

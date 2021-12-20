@@ -16,6 +16,7 @@
 #include <drivers/cmos.h>
 
 #include <mem/phys.h>
+#include <mem/kheap.h>
 
 void _start(struct stivale2_struct *stivale2_struct);
 
@@ -86,6 +87,8 @@ void _start(struct stivale2_struct *stivale2_struct)
     /* after the interrupts and before the PCI,
      * we initialize the physical memory */
     init_phys(stivale2_get_tag(stivale2_struct, STIVALE2_STRUCT_TAG_MEMMAP_ID));
+    char *heap_test = kmalloc(10);
+    kprintf("[HEAP] heap_test = 0x%x\n", heap_test);
 
     /* init the PCI */
     init_pci();
