@@ -2,6 +2,7 @@
 #include <kernel/ports.h>
 
 #include <drivers/ne2k.h>
+#include <drivers/rtl8139.h>
 
 #include <string/string.h>
 
@@ -52,7 +53,7 @@ uint64_t get_io_address(uint8_t bus, uint8_t dev, uint8_t func)
      */
     uint64_t addr = 0x0;
     uint32_t bar0 = pci_conf_read_word(bus, dev, func, 16);
-    if (bar0 & 1) /* I/O space BAR */
+    if (bar0 & 1)                /* I/O space BAR */
         addr = (bar0 >> 2) << 2; /* all the bits except the first two */
     return addr;
 }
@@ -197,7 +198,7 @@ static struct
     {0x0D, 0x11, "Bluetooth Controller"},
     {0x0D, 0x12, "Broadband Controller"},
     {0x0D, 0x20, "Ethernet Controller (802.1a)"},
-    {0x0D, 0x21, "thernet Controller (802.1b)"},
+    {0x0D, 0x21, "Ethernet Controller (802.1b)"},
 };
 
 class_t get_class_name(uint16_t class, uint16_t subclass)
@@ -234,6 +235,12 @@ void init_pci()
                     temp.ioaddr = get_io_address(bus, dev, func);
                     if (temp.ioaddr)
                         init_ne2k(temp.ioaddr);
+                }
+                else if (temp.dev == 0x8139) /* RTL8139 network card */
+                {
+                    temp.ioaddr = get_io_address(bus, dev, func);
+                    if (temp.ioaddr)
+                        init_rtl8139(temp.ioaddr);
                 }
                 else
                 {

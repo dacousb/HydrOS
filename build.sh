@@ -51,6 +51,7 @@ then
     if [[ $1 == "run" ]]
     then
         if [[ $2 == "ne2k" ]]; then qemuflags+="-nic user,model=ne2k_pci"; fi
+        if [[ $2 == "rtl" ]]; then qemuflags+="-nic user,model=rtl8139"; fi
         qemu-system-x86_64 -cdrom $iso $qemuflags
     fi
 
@@ -67,4 +68,5 @@ then
 else
     echo "(build), (run), (limine), (clean)"
     echo "(run ne2k) to load the ne2k device"
+    echo "(run rtl)  to load the rtl8139 device"
 fi
