@@ -23,6 +23,7 @@ void *kmalloc(size_t size)
     }
     while (CHECK_PAGE(free_top) == 0) /* while we find free pages */
         free_top++;
+    uint64_t addr = free_base * PAGE_SIZE;
     free_base += (size + (4096 - 1)) / 4096; /* a pretty good round up method for divisions */
-    return (void *)(free_base * PAGE_SIZE);
+    return (void *)(addr);
 }
