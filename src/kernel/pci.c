@@ -23,6 +23,11 @@ uint16_t pci_conf_read_word(uint8_t bus, uint8_t dev, uint8_t func, uint8_t offs
     return tmp;
 }
 
+/* Register Offset | Bits 31-24 | Bits 23-16 | Bits 15-8 | Bits 7-0
+ * 0x0      0x0    | Device ID               | Vendor ID
+ * 0x2      0x8    | Class code | Subclass   | Prog IF   | Revision ID
+ */
+
 uint16_t get_vendor_id(uint8_t bus, uint8_t dev, uint8_t func)
 {
     return pci_conf_read_word(bus, dev, func, 0);
@@ -30,17 +35,23 @@ uint16_t get_vendor_id(uint8_t bus, uint8_t dev, uint8_t func)
 
 uint16_t get_dev_id(uint8_t bus, uint8_t dev, uint8_t func)
 {
-    return pci_conf_read_word(bus, dev, func, 2);
+    return pci_conf_read_word(bus, dev, func, 0x0 + 2);
 }
 
 uint16_t get_class(uint8_t bus, uint8_t dev, uint8_t func)
 {
-    return pci_conf_read_word(bus, dev, func, 10) >> 8;
+    /* this will read bits 31-16, but device class is located 
+     * in bits 31-24, so we will shift everything 8 bits, discarding
+     * the first byte and getting the second one */
+    return pci_conf_read_word(bus, dev, func, 0x8 + 2) >> 8;
 }
 
 uint16_t get_subclass(uint8_t bus, uint8_t dev, uint8_t func)
 {
-    return pci_conf_read_word(bus, dev, func, 10) >> 16;
+    /* this will read bits 31-16, but device subclass is located
+     * in bits 23-16, so we will AND 0xFF (equivalent to an entire byte)
+     * to just get bits 23-16 and discard bits 31-24 */
+    return pci_conf_read_word(bus, dev, func, 0x8 + 2) & 0xFF;
 }
 
 uint64_t get_io_address(uint8_t bus, uint8_t dev, uint8_t func)
@@ -205,11 +216,14 @@ class_t get_class_name(uint16_t class, uint16_t subclass)
 {
     class_t temp;
     temp.class_name = (class_codes[class]) ? class_codes[class] : "Other";
+    temp.subclass_name = NULL;
     for (uint8_t i = 0; subclass_codes[i].name; i++)
     {
         if (subclass_codes[i].class == class && subclass_codes[i].subclass == subclass)
             temp.subclass_name = subclass_codes[i].name;
     }
+    if (temp.subclass_name == NULL) /* (subclass_code = 0x80) */
+        temp.subclass_name = "Other";
     return temp;
 }
 
