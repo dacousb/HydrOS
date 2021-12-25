@@ -1,7 +1,7 @@
 #include <stddef.h>
 
 #include <fb/fb.h>
-#include <fb/font.h>
+#include <fb/tamsyn8x16.h>
 
 uint32_t *fb;
 uint16_t fb_height, fb_width;
@@ -41,7 +41,7 @@ void put_literal_char(int x, int y, char c, uint32_t fg_color, uint32_t bg_color
     {
         for (int lx = 0; lx < FONT_WIDTH; lx++)
         {
-            uint8_t pixel = _tvga_c4__8x14[(c * FONT_HEIGHT) + ly];
+            uint8_t pixel = tamsyn8x16[(c * FONT_HEIGHT) + ly];
             if ((pixel >> lx) & 1)
                 fb[x + ((FONT_WIDTH - 1) - lx) + ((y + ly) * fb_width)] = fg_color;
             else
