@@ -35,6 +35,8 @@ Drivers and usage:
 - [x] PS/2 Keyboard driver
 - [ ] Mouse support
 - [x] Basic shutdown (ACPI)
+- [x] AHCI drive detection
+- [ ] AHCI drive read/write
 
 Network:
 

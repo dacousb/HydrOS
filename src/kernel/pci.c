@@ -3,6 +3,7 @@
 
 #include <drivers/ne2k.h>
 #include <drivers/rtl8139.h>
+#include <drivers/ahci.h>
 
 #include <string/string.h>
 
@@ -20,6 +21,21 @@ uint16_t pci_conf_read_word(uint8_t bus, uint8_t dev, uint8_t func, uint8_t offs
 
     port_long_out(CONFIG_ADDRESS, addr); /* write our new config to the config register, as seen in pci.h */
     tmp = (uint16_t)((port_long_in(CONFIG_DATA) >> (offset & 2) * 8) & 0xFFFF);
+    return tmp;
+}
+
+uint32_t pci_conf_read_dword(uint8_t bus, uint8_t dev, uint8_t func, uint8_t offset)
+{ /* refer to the pci.h figure for more information */
+    uint32_t addr;
+    uint32_t lbus = (uint32_t)bus;
+    uint32_t ldev = (uint32_t)dev;
+    uint32_t lfunc = (uint32_t)func;
+    uint32_t tmp = 0;
+
+    addr = (uint32_t)((lbus << 16) | (ldev << 11) | (lfunc << 8) | (offset & 0xFC) | (1 << 31));
+
+    port_long_out(CONFIG_ADDRESS, addr); /* write our new config to the config register, as seen in pci.h */
+    tmp = (uint32_t)(port_long_in(CONFIG_DATA));
     return tmp;
 }
 
@@ -54,7 +70,7 @@ uint16_t get_subclass(uint8_t bus, uint8_t dev, uint8_t func)
     return pci_conf_read_word(bus, dev, func, 0x8 + 2) & 0xFF;
 }
 
-uint64_t get_io_address(uint8_t bus, uint8_t dev, uint8_t func)
+uint32_t get_io_address(uint8_t bus, uint8_t dev, uint8_t func)
 {
     /* Base Address Registers (or BARs) are used to hold memory
      * addresses used by the device
@@ -63,9 +79,18 @@ uint64_t get_io_address(uint8_t bus, uint8_t dev, uint8_t func)
      * so it just works for some specific devices
      */
     uint64_t addr = 0x0;
-    uint32_t bar0 = pci_conf_read_word(bus, dev, func, 16);
+    uint32_t bar0 = pci_conf_read_dword(bus, dev, func, 0x10);
     if (bar0 & 1)                /* I/O space BAR */
         addr = (bar0 >> 2) << 2; /* all the bits except the first two */
+    return addr;
+}
+
+uint32_t get_abar(uint8_t bus, uint8_t dev, uint8_t func)
+{
+    uint64_t addr = 0x0;
+    uint32_t bar5 = pci_conf_read_dword(bus, dev, func, 0x24);
+    if (!(bar5 & 1))             /* Memory Space BAR */
+        addr = (bar5 >> 4) << 4; /* all bits except the first four */
     return addr;
 }
 
@@ -255,6 +280,12 @@ void init_pci()
                     temp.ioaddr = get_io_address(bus, dev, func);
                     if (temp.ioaddr)
                         init_rtl8139(temp.ioaddr);
+                }
+                else if (temp.class == 0x1 && temp.subclass == 0x6) /* AHCI controller */
+                {
+                    temp.abar = get_abar(bus, dev, func);
+                    if (temp.abar)
+                        init_ahci(temp.abar);
                 }
                 else
                 {
