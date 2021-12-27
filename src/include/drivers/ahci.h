@@ -138,7 +138,7 @@ typedef struct fis_dma_setup
 
     uint8_t pm_port : 4; /* port multiplier */
     uint8_t reserved_1 : 1;
-    uint8_t d : 1; /* data transfer direciton, 1: dev to host */
+    uint8_t d : 1; /* data transfer direction, 1: dev to host */
     uint8_t i : 1; /* interrupt bit                           */
     uint8_t a : 1; /* specifies if DMA Activate FIS is needed */
 
@@ -278,7 +278,7 @@ typedef volatile struct hba_fis
     fis_pio_setup_t psfis; /* PIO setup FIS */
     uint8_t pad2[12];
 
-    fis_reg_d2h_t rfis; /* Register - dev to host FIS */
+    fis_reg_d2h_t rfis; /* register - dev to host FIS */
     uint8_t pad3[4];
 
     uint16_t sdbfis; /* set device bit FIS */
