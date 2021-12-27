@@ -79,6 +79,11 @@ void kprintf(const char *fmt, ...)
             case 's':
                 print(va_arg(lst, char *));
                 break;
+            case 'l':
+                i++;
+                if (fmt[i] == 'u' || fmt[i] == 'x')
+                    print(itoa(fmt[i], va_arg(lst, long)));
+                break;
             case 'u':
                 print(itoa('u', va_arg(lst, int)));
                 break;

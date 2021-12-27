@@ -104,5 +104,5 @@ void init_acpi(struct stivale2_struct_tag_rsdp *rsdp_tag)
         panic("[ACPI] fadt lookup failed\n");
 
     /* print their memory addresses */
-    kprintf("[ACPI] rsdp = 0x%x, rsdt = 0x%x, fadt = 0x%x\n", rsdp, rsdt, fadt);
+    kprintf("[ACPI] rsdp = 0x%x, rsdt = 0x%lx, fadt = 0x%lx\n", rsdp, rsdt, fadt);
 }

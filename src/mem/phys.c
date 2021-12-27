@@ -136,5 +136,5 @@ void init_phys(struct stivale2_struct_tag_memmap *mem_tag)
             phys_free_multi((void *)mem_entry.base, mem_entry.length / PAGE_SIZE);
     }
 
-    kprintf("[PHYS] %u/%uMB\n", available_memory / (1024 * 1024), total_memory / (1024 * 1024));
+    kprintf("[PHYS] %uMB available, %uMB total\n", available_memory / (1024 * 1024), total_memory / (1024 * 1024));
 }
