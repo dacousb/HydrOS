@@ -27,7 +27,7 @@ Kernel:
 Memory
 - [x] Basic memory information
 - [x] Physical memory
-- [ ] Virtual memory
+- [x] Virtual memory
 
 Drivers and usage:
 
