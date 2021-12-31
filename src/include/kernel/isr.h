@@ -36,7 +36,4 @@ extern void isr29();
 extern void isr30();
 extern void isr31();
 
-void isr_handler(uint64_t id) asm("isr_handler");
-/* symbol so we can call it from assembly */
-
 void init_isr();

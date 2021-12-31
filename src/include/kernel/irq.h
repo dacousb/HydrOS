@@ -18,6 +18,5 @@ extern void irq0();
 extern void irq1();
 extern void irq2();
 
-void isr_handler(uint64_t id) asm("isr_handler"); /* symbol so we can call it from assembly */
 void init_irq();
 void irq_set_handler(uint16_t irq, void(*handler));

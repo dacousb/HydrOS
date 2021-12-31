@@ -1,6 +1,8 @@
 #include <kernel/isr.h>
 #include <kernel/idt.h>
+#include <cpu/regs.h>
 #include <string/string.h>
+#include <fb/fb.h>
 
 const char *exception_messages[] = {
     "Division By Zero",
@@ -75,9 +77,12 @@ void init_isr()
     idt_set_entry(31, (uint64_t)isr31);
 }
 
-void isr_handler(uint64_t id)
+void isr_handler(uint64_t id, regs_t *regs)
 {
-    kprintf("[!] Received interrupt: %s\n", exception_messages[id]);
+    set_color(DEFAULT_GR, DEFAULT_BG);
+    kprintf("----------- INTERRUPT -----------\n");
+    kprintf("[0x%lx] %s\n", regs->rip, exception_messages[id]);
+    kprintf("---------------------------------\n");
     for (;;)
         asm("sti\nhlt\n");
 }
