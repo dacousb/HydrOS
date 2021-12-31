@@ -4,37 +4,15 @@
 #include <string/string.h>
 #include <fb/fb.h>
 
-char *itoa(char base, long long i)
+void itoa(char base, unsigned long i)
 {
-    char negative = 0;
-    if (i < 0)
-    {
-        negative = 1;
-        i = -i;
-    }
-
-    if (base == 'u')
-        base = 10;
-    else if (base == 'x')
-        base = 16;
-
-    static char hex[] = "0123456789ABCDEF";
-    static char buffer[50];
-    char *ptr;
-
-    ptr = &buffer[49];
-    *ptr = '\0';
-
-    do
-    {
-        *--ptr = hex[i % base];
-        i /= base;
-    } while (i != 0);
-
-    if (negative)
-        *--ptr = '-';
-
-    return ptr;
+    char tmp[21], *tmpr = &tmp[0];
+    memset((void *)tmp, 0, 21);
+    base = (base == 'u') ? 10 : 16;
+    for (; i > 0; i /= base)
+        *(++tmpr) = "0123456789ABCDEF"[i % base];
+    while (*tmpr != 0)
+        putchar(*(tmpr--));
 }
 
 int strcmp(char *s1, char *s2)
@@ -82,13 +60,13 @@ void kprintf(const char *fmt, ...)
             case 'l':
                 i++;
                 if (fmt[i] == 'u' || fmt[i] == 'x')
-                    print(itoa(fmt[i], va_arg(lst, long)));
+                    itoa(fmt[i], va_arg(lst, long));
                 break;
             case 'u':
-                print(itoa('u', va_arg(lst, int)));
+                itoa('u', va_arg(lst, int));
                 break;
             case 'x':
-                print(itoa('x', va_arg(lst, int)));
+                itoa('x', va_arg(lst, int));
                 break;
             case '0' ... '9':
                 leading_zero = fmt[i] - '0';
@@ -98,7 +76,7 @@ void kprintf(const char *fmt, ...)
                     int tmp = va_arg(lst, int);
                     if (tmp < pow((fmt[i] == 'u') ? 10 : 16, leading_zero))
                         putchar('0');
-                    print(itoa(fmt[i], tmp));
+                    itoa(fmt[i], tmp);
                 }
                 break;
             case '%':

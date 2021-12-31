@@ -6,6 +6,8 @@
 uint32_t *fb;
 uint16_t fb_height, fb_width;
 
+static uint32_t fg_color = DEFAULT_FG, bg_color = DEFAULT_BG;
+
 int print_x = 0, print_y = 0;
 
 void init_fb(struct stivale2_struct_tag_framebuffer *fb_tag)
@@ -15,7 +17,7 @@ void init_fb(struct stivale2_struct_tag_framebuffer *fb_tag)
     fb_height = fb_tag->framebuffer_height;
 
     for (size_t i = 0; i < (fb_width * fb_height); i++)
-        fb[i] = DEFAULT_BG; /* fills the entire background for the first time */
+        fb[i] = bg_color; /* fills the entire background for the first time */
 }
 
 void scroll()
@@ -26,7 +28,7 @@ void scroll()
 
     /* fills the new line with the background color (because it is empty!) */
     for (size_t i = (fb_width * (fb_height - FONT_HEIGHT)); i < (fb_width * fb_height); i++)
-        fb[i] = DEFAULT_BG;
+        fb[i] = bg_color;
 }
 
 void set_pixel(int x, int y, uint32_t color)
@@ -48,6 +50,11 @@ void put_literal_char(int x, int y, char c, uint32_t fg_color, uint32_t bg_color
                 fb[x + ((FONT_WIDTH - 1) - lx) + ((y + ly) * fb_width)] = bg_color;
         }
     }
+}
+
+void set_color(uint32_t fg, uint32_t bg)
+{
+    fg_color = fg, bg_color = bg;
 }
 
 void putchar(char c)
@@ -80,7 +87,7 @@ void putchar(char c)
             scroll();
             print_y -= FONT_HEIGHT;
         }
-        put_literal_char(print_x, print_y, c, DEFAULT_FG, DEFAULT_BG);
+        put_literal_char(print_x, print_y, c, fg_color, bg_color);
         print_x += FONT_WIDTH;
     }
 }
