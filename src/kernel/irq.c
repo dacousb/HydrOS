@@ -1,7 +1,7 @@
 #include <kernel/irq.h>
 #include <kernel/idt.h>
 #include <kernel/ports.h>
-#include <kernel/timer.h>
+#include <task/sched.h>
 
 void (*irq_handlers[256])(); /* different handlers (eg. kb) are stored here */
 
@@ -27,16 +27,18 @@ void init_irq()
     idt_set_entry(34, (uint64_t)irq2);
 
     asm("sti"); /* set the interrupt flag */
-    init_timer(50);
 }
 
-void irq_handler(uint64_t irq)
+void irq_handler(uint64_t irq, regs_t *regs)
 {
     if (irq >= 40)
         port_byte_out(PIC2, PIC_EOI);
 
+    if (irq == 32)
+        schedule(regs);
+
     void (*handler)() = irq_handlers[irq];
-    
+
     if (handler)
         handler();
 

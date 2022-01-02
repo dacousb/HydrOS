@@ -29,6 +29,7 @@ then
 
     $AS $AFLAGS src/kernel/__gdt.asm -o __gdt.o
     $AS $AFLAGS src/kernel/__int.asm -o __int.o
+    $AS $AFLAGS src/task/__task.asm -o __task.o
 
     # --------------------------------------
 

@@ -19,6 +19,9 @@
 #include <mem/virt.h>
 #include <mem/kheap.h>
 
+#include <task/sched.h>
+#include <task/task.h>
+
 void _start(struct stivale2_struct *stivale2_struct);
 
 static uint8_t stack[4096];
@@ -52,6 +55,21 @@ void *stivale2_get_tag(struct stivale2_struct *stivale2_struct, uint64_t id)
             return current_tag;
         current_tag = (void *)current_tag->next;
     }
+}
+
+void kernel_task2()
+{
+    kprintf("[kernel_task2] Hello world!\n");
+    for (;;)
+        ;
+}
+
+void kernel_task1()
+{
+    kprintf("[kernel_task1] Hello world!\n");
+    create_task((uint64_t)kernel_task2, FLAG_KERN);
+    for (;;)
+        ;
 }
 
 void _start(struct stivale2_struct *stivale2_struct)
@@ -91,6 +109,9 @@ void _start(struct stivale2_struct *stivale2_struct)
     /* init virtual memory */
     init_virt();
 
+    /* init scheduler */
+    init_sched();
+
     /* init the PCI */
     init_pci();
 
@@ -99,7 +120,9 @@ void _start(struct stivale2_struct *stivale2_struct)
 
     /* init the keyboard */
     init_kb();
-    kprintf("[OK] KB\n");
+    kprintf("[OK] keyboard\n");
+
+    create_task((uint64_t)kernel_task1, FLAG_KERN);
 
     for (;;)
     {

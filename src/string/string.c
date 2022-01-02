@@ -6,6 +6,8 @@
 
 void itoa(char base, unsigned long i)
 {
+    if (i == 0)
+        putchar('0');
     char tmp[21], *tmpr = &tmp[0];
     memset((void *)tmp, 0, 21);
     base = (base == 'u') ? 10 : 16;
@@ -97,4 +99,13 @@ void *memset(void *buffptr, int value, size_t size)
     for (size_t i = 0; i < size; i++)
         buff[i] = (uint8_t)value;
     return buffptr;
+}
+
+void *kmemcpy(void *dstptr, void *srcptr, size_t size)
+{
+    uint8_t *dst = (uint8_t *)dstptr;
+    uint8_t *src = (uint8_t *)srcptr;
+    for (size_t i = 0; i < size; i++)
+        dst[i] = src[i];
+    return dstptr;
 }

@@ -25,9 +25,15 @@ Kernel:
 - [x] ACPI
 
 Memory
-- [x] Basic memory information
 - [x] Physical memory
+- [x] Basic kheap
 - [x] Virtual memory
+
+Multitasking
+- [x] Scheduler
+    - [x] Kernel tasks
+    - [ ] User tasks
+- [ ] ELF loading
 
 Drivers and usage:
 
