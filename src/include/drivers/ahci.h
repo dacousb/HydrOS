@@ -51,7 +51,7 @@ typedef struct fis_reg_h2d
     uint8_t reserved_2[4];
 } fis_reg_h2d_t;
 
-/* a dev to host regiter FIS is used by the device to notify the host
+/* a dev to host register FIS is used by the device to notify the host
  * that some ATA register has changed, it contains data about things
  * that have been updated (status, error and other registers), the kernel
  * will receive this */
@@ -125,7 +125,7 @@ typedef struct fis_pio_setup
     uint8_t count_low;  /* count register */
     uint8_t count_high; /* count register */
     uint8_t reserved_4;
-    uint8_t e_status; /* new vaue of status register */
+    uint8_t e_status; /* new value of status register */
 
     uint16_t tc; /* transfer count */
     uint8_t reserved_5[2];
@@ -161,7 +161,7 @@ typedef volatile struct hba_port
     uint32_t clb;  /* command list base address                 */
     uint32_t clbu; /* command list base address (upper 32 bits) */
     uint32_t fb;   /* FIS base address                          */
-    uint32_t fbu;  /* FIS base adress (upper 32 bits)           */
+    uint32_t fbu;  /* FIS base address (upper 32 bits)           */
     uint32_t is;   /* interrupt status                          */
     uint32_t ie;   /* interrupt enable                          */
     uint32_t cmd;  /* command and status                        */

@@ -124,7 +124,7 @@ void load_task(task_t *task)
 void init_sched()
 {
     tasks = (task_t *)kmalloc(sizeof(task_t) * MAX_TASKS);
-    for (size_t i = 0; i < MAX_TASKS; i++) /* set all tasks as unitialized */
+    for (size_t i = 0; i < MAX_TASKS; i++) /* set all tasks as uninitialized */
         tasks[i].status = TASK_NO_INIT;
     kprintf("[SCHD] tasks queue initialized\n");
 
