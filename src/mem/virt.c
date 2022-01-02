@@ -40,11 +40,6 @@
  *      - 5.4.1 Field Definitions
  */
 
-#define HIGHER_HALF 0xffff800000000000
-#define KERNEL_OFFS 0xffffffff80000000
-
-#define GB 0x40000000UL
-
 uint64_t *kernel_page_map = 0; /* page_map is a pointer to PML4, this address will be stored in CR3 */
 
 void virt_load_page_map(uint64_t pml4)
@@ -152,11 +147,11 @@ void init_virt()
     kprintf("[VIRT] page_map = 0x%x, remapping memory: ", kernel_page_map);
 
     /* limine mapped the kernel for us, but let's do it again */
-    virt_map_multi(kernel_page_map, 0, (4 * GB), 0, 0b11); /* identity map */
+    virt_map_multi(kernel_page_map, 0, 0x8000000, 0, 0b11);
     kprintf("[id map]");
-    virt_map_multi(kernel_page_map, 0, (4 * GB), HIGHER_HALF, 0b11); /* data */
+    virt_map_multi(kernel_page_map, 0, 0x100000000, HIGHER_HALF, 0b11);
     kprintf("[data]");
-    virt_map_multi(kernel_page_map, 0, (4 * GB), KERNEL_OFFS, 0b11); /* kernel */
+    virt_map_multi(kernel_page_map, 0, 0x8000000, KERNEL_OFFS, 0b11);
     kprintf("[kernel]");
 
     virt_load_page_map((uint64_t)kernel_page_map);
