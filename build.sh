@@ -3,7 +3,7 @@
 LD="ld"
 CC="gcc"
 AS="nasm"
-CFLAGS="-std=gnu99 -ffreestanding -fno-stack-protector -Wall -Wextra -c -Isrc/include"
+CFLAGS="-std=gnu99 -ffreestanding -fno-stack-protector -mno-red-zone -Wall -Wextra -c -Isrc/include"
 AFLAGS="-f elf64"
 
 linker="linker.ld"
