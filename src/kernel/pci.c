@@ -5,6 +5,8 @@
 #include <drivers/rtl8139.h>
 #include <drivers/ahci.h>
 
+#include <mem/virt.h>
+
 #include <string/string.h>
 
 uint16_t pci_conf_read_word(uint8_t bus, uint8_t dev, uint8_t func, uint8_t offset)
@@ -285,7 +287,7 @@ void init_pci()
                 {
                     temp.abar = get_abar(bus, dev, func);
                     if (temp.abar)
-                        init_ahci(temp.abar);
+                        init_ahci(temp.abar + HIGHER_HALF); /* not virtually mapped */
                 }
                 else
                 {
